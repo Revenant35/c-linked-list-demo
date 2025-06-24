@@ -28,4 +28,5 @@ void *remove_head_doubly_linked_list(DoublyLinkedList *list);
 void *remove_tail_doubly_linked_list(DoublyLinkedList *list);
 void *remove_index_doubly_linked_list(DoublyLinkedList *list, unsigned long long index);
 
+void print_doubly_linked_list(const DoublyLinkedList *list, void (*print)(void *data));
 #endif //LINKED_LIST_H

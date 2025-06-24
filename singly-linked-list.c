@@ -1,5 +1,6 @@
 #include "singly-linked-list.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 static SinglyLinkedNode *create_singly_linked_node(
@@ -196,4 +197,23 @@ void *remove_index_singly_linked_list(
     free(node);
 
     return data;
+}
+
+void print_singly_linked_list(
+    const SinglyLinkedList *list,
+    void (*print)(void *data)
+) {
+    auto current = list->head;
+    if (current != NULL) {
+        while (current->next != NULL) {
+            print(current->data);
+            current = current->next;
+
+            if (current->next != NULL) {
+                printf(" -> ");
+            }
+        }
+    }
+
+    printf("\n");
 }

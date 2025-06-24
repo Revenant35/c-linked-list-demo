@@ -1,5 +1,6 @@
 #include "doubly-linked-list.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 static DoublyLinkedNode *create_doubly_linked_node(
@@ -168,4 +169,23 @@ void *remove_index_doubly_linked_list(DoublyLinkedList *list, const unsigned lon
     free(node);
 
     return data;
+}
+
+void print_doubly_linked_list(
+    const DoublyLinkedList *list,
+    void (*print)(void *data)
+) {
+    auto current = list->head;
+    if (current != NULL) {
+        while (current->next != NULL) {
+            print(current->data);
+            current = current->next;
+
+            if (current->next != NULL) {
+                printf(" <-> ");
+            }
+        }
+    }
+
+    printf("\n");
 }

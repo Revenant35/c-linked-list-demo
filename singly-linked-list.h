@@ -25,4 +25,6 @@ void *peek_index_singly_linked_list(const SinglyLinkedList *list, unsigned long 
 void *remove_head_singly_linked_list(SinglyLinkedList *list);
 void *remove_tail_singly_linked_list(SinglyLinkedList *list);
 void *remove_index_singly_linked_list(SinglyLinkedList *list, unsigned long long index);
+
+void print_singly_linked_list(const SinglyLinkedList *list, void (*print)(void *data));
 #endif //SINGLY_LINKED_LIST_H
