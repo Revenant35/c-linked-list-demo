@@ -22,8 +22,14 @@ void test_singly_linked_list() {
 
     printf("Index 5 of the list is %d\n", (int)peek_index_singly_linked_list(list, 5));
 
-    printf("Adding 0 to the end of the list.\n");
-    insert_at_tail_singly_linked_list(list, (void*)0);
+    printf("Inserting 10 at the end of the list.\n");
+    insert_at_tail_singly_linked_list(list, (void*)10);
+
+    printf("Singly Linked List: ");
+    print_singly_linked_list(list, &print);
+
+    printf("Inserting 42 at index 4.\n");
+    insert_at_index_singly_linked_list(list, (void*)42, 4);
 
     printf("Singly Linked List: ");
     print_singly_linked_list(list, &print);
@@ -50,6 +56,12 @@ void test_doubly_linked_list() {
 
     printf("Adding 0 to the end of the list.\n");
     insert_at_tail_doubly_linked_list(list, (void*)0);
+
+    printf("Doubly Linked List: ");
+    print_doubly_linked_list(list, &print);
+
+    printf("Inserting 42 at index 4.\n");
+    insert_at_index_doubly_linked_list(list, (void*)42, 4);
 
     printf("Doubly Linked List: ");
     print_doubly_linked_list(list, &print);

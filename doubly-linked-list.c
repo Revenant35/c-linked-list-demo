@@ -53,7 +53,15 @@ int insert_at_head_doubly_linked_list(
         return -1;
     }
 
+    if (list->head == NULL || list->size == 0) {
+        list->head = new_node;
+        list->tail = new_node;
+        list->size++;
+        return 0;
+    }
+
     new_node->next = list->head;
+    list->head->prev = new_node;
     list->head = new_node;
     list->size++;
 
@@ -69,7 +77,15 @@ int insert_at_tail_doubly_linked_list(
         return -1;
     }
 
+    if (list->tail == NULL || list->size == 0) {
+        list->head = new_node;
+        list->tail = new_node;
+        list->size++;
+        return 0;
+    }
+
     new_node->prev = list->tail;
+    list->tail->next = new_node;
     list->tail = new_node;
     list->size++;
 
@@ -81,19 +97,32 @@ int insert_at_index_doubly_linked_list(
     void *data,
     const unsigned long long index
 ) {
+    if (index > list->size) {
+        return -1;
+    }
+
+    if (index == 0) {
+        return insert_at_head_doubly_linked_list(list, data);
+    }
+
+    if (index == list->size) {
+        return insert_at_tail_doubly_linked_list(list, data);
+    }
+
+    const auto node = get_index_doubly_linked_list(list, index);
+    if (node == NULL) {
+        return -1;
+    }
+
     const auto new_node = create_doubly_linked_node(data);
     if (new_node == NULL) {
         return -1;
     }
 
-    const auto before_node = get_index_doubly_linked_list(list, index - 1);
-
-    if (before_node == NULL) {
-        return insert_at_tail_doubly_linked_list(list, data);
-    }
-
-    new_node->next = before_node->next;
-    before_node->next = new_node;
+    new_node->prev = node->prev;
+    new_node->next = node;
+    node->prev->next = new_node;
+    node->prev = new_node;
     list->size++;
 
     return 0;

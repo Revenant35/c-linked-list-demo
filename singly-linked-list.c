@@ -102,19 +102,30 @@ int insert_at_index_singly_linked_list(
     void *data,
     const unsigned long long index
 ) {
+    if (index > list->size) {
+        return -1;
+    }
+
+    if (index == 0) {
+        return insert_at_head_singly_linked_list(list, data);
+    }
+
+    if (index == list->size) {
+        return insert_at_tail_singly_linked_list(list, data);
+    }
+
+    const auto previous_node = get_index_singly_linked_list(list, index - 1);
+    if (previous_node == NULL) {
+        return -1;
+    }
+
     const auto new_node = create_singly_linked_node(data);
     if (new_node == NULL) {
         return -1;
     }
 
-    const auto before_node = get_index_singly_linked_list(list, index - 1);
-
-    if (before_node == NULL) {
-        return insert_at_tail_singly_linked_list(list, data);
-    }
-
-    new_node->next = before_node->next;
-    before_node->next = new_node;
+    new_node->next = previous_node->next;
+    previous_node->next = new_node;
     list->size++;
 
     return 0;
