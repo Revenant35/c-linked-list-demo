@@ -61,17 +61,11 @@ void destroy_singly_linked_list(
     SinglyLinkedList *list
 ) {
     SinglyLinkedNode *current = list->head;
-    if (current == NULL) {
-        free(list);
-        return;
-    }
-
-    while (current->next != NULL) {
+    while (current != NULL) {
         SinglyLinkedNode *temp = current;
         current = current->next;
         free(temp);
     }
-
     free(list);
 }
 
@@ -179,10 +173,10 @@ void *remove_head_singly_linked_list(
     }
 
     SinglyLinkedNode *node = list->head;
+    void *data = node->data;
+
     list->head = list->head->next;
     list->size--;
-
-    SinglyLinkedNode *data = node->data;
     free(node);
 
     return data;
@@ -191,18 +185,21 @@ void *remove_head_singly_linked_list(
 void *remove_tail_singly_linked_list(
     SinglyLinkedList *list
 ) {
-    SinglyLinkedNode *before_tail = get_index_singly_linked_list(list, list->size - 2);
-
-    if (before_tail == NULL) {
+    if (list->head == NULL) {
         return NULL;
     }
 
-    SinglyLinkedNode *tail = before_tail->next;
-    before_tail->next = NULL;
-    list->size--;
+    if (list->head->next == NULL) {
+        return remove_head_singly_linked_list(list);
+    }
 
-    SinglyLinkedNode *data = tail->data;
+    SinglyLinkedNode *before_tail = get_index_singly_linked_list(list, list->size - 2);
+    SinglyLinkedNode *tail = before_tail->next;
+
+    void *data = tail->data;
+    before_tail->next = NULL;
     free(tail);
+    list->size--;
 
     return data;
 }
@@ -211,18 +208,26 @@ void *remove_index_singly_linked_list(
     SinglyLinkedList *list,
     const unsigned long long index
 ) {
-    SinglyLinkedNode *before_node = get_index_singly_linked_list(list, index - 1);
-
-    if (before_node == NULL) {
+    if (index >= list->size) {
         return NULL;
     }
 
-    SinglyLinkedNode *node = before_node->next;
-    before_node->next = before_node->next->next;
-    list->size--;
+    if (index == 0) {
+        return remove_head_singly_linked_list(list);
+    }
 
-    SinglyLinkedNode *data = node->data;
+    if (index == list->size - 1) {
+        return remove_tail_singly_linked_list(list);
+    }
+
+    SinglyLinkedNode *before_node = get_index_singly_linked_list(list, index - 1);
+
+    SinglyLinkedNode *node = before_node->next;
+    void *data = node->data;
+
+    before_node->next = node->next;
     free(node);
+    list->size--;
 
     return data;
 }
@@ -232,16 +237,12 @@ void print_singly_linked_list(
     void (*print)(void *data)
 ) {
     SinglyLinkedNode *current = list->head;
-    if (current != NULL) {
-        while (current->next != NULL) {
-            print(current->data);
-            current = current->next;
-
-            if (current->next != NULL) {
-                printf(" -> ");
-            }
+    while (current != NULL) {
+        print(current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
         }
+        current = current->next;
     }
-
     printf("\n");
 }
