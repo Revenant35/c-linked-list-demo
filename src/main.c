@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include "singly-linked-list.h"
-#include "doubly-linked-list.h"
+#include "../include/doubly-linked-list.h"
 
 void print ( void *data ) {
     printf("%d", (int)data);
 }
 
 void test_singly_linked_list() {
-    const auto list = create_singly_linked_list();
+    SinglyLinkedList * list = create_singly_linked_list();
     for (int i = 0; i < 10; i++) {
         insert_at_head_singly_linked_list(list, (void*)i);
     }
@@ -39,7 +39,7 @@ void test_singly_linked_list() {
 }
 
 void test_doubly_linked_list() {
-    const auto list = create_doubly_linked_list();
+    DoublyLinkedList * list = create_doubly_linked_list();
     for (int i = 0; i < 10; i++) {
         insert_at_head_doubly_linked_list(list, (void*)i);
     }

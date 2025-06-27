@@ -1,4 +1,4 @@
-#include "doubly-linked-list.h"
+#include "../include/doubly-linked-list.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,8 +9,8 @@ static DoublyLinkedNode *create_doubly_linked_node(
     DoublyLinkedNode *node = malloc(sizeof(DoublyLinkedNode));
     if (node != NULL) {
         node->data = data;
-        node->next = nullptr;
-        node->prev = nullptr;
+        node->next = NULL;
+        node->prev = NULL;
     }
     return node;
 }
@@ -20,14 +20,14 @@ static DoublyLinkedNode *get_index_doubly_linked_list(
     const unsigned long long index
 ) {
     if (list->head == NULL || list->size == 0) {
-        return nullptr;
+        return NULL;
     }
 
-    auto current = list->head;
+    DoublyLinkedNode *current = list->head;
     for (unsigned long long i = 0; i < index; i++) {
         current = current->next;
         if (current == NULL) {
-            return nullptr;
+            return NULL;
         }
     }
 
@@ -48,7 +48,7 @@ int insert_at_head_doubly_linked_list(
     DoublyLinkedList *list,
     void *data
 ) {
-    const auto new_node = create_doubly_linked_node(data);
+    DoublyLinkedNode *new_node = create_doubly_linked_node(data);
     if (new_node == NULL) {
         return -1;
     }
@@ -72,7 +72,7 @@ int insert_at_tail_doubly_linked_list(
     DoublyLinkedList *list,
     void *data
 ) {
-    const auto new_node = create_doubly_linked_node(data);
+    DoublyLinkedNode *new_node = create_doubly_linked_node(data);
     if (new_node == NULL) {
         return -1;
     }
@@ -109,12 +109,12 @@ int insert_at_index_doubly_linked_list(
         return insert_at_tail_doubly_linked_list(list, data);
     }
 
-    const auto node = get_index_doubly_linked_list(list, index);
+    DoublyLinkedNode *node = get_index_doubly_linked_list(list, index);
     if (node == NULL) {
         return -1;
     }
 
-    const auto new_node = create_doubly_linked_node(data);
+    DoublyLinkedNode *new_node = create_doubly_linked_node(data);
     if (new_node == NULL) {
         return -1;
     }
@@ -131,36 +131,42 @@ int insert_at_index_doubly_linked_list(
 void *peek_head_doubly_linked_list(
     const DoublyLinkedList *list
 ) {
-    return list->head != NULL ? list->head->data : nullptr;
+    return list->head != NULL ? list->head->data : NULL;
 }
 
 void *peek_tail_doubly_linked_list(
     const DoublyLinkedList *list
 ) {
-    return list->tail != NULL ? list->tail->data : nullptr;
+    return list->tail != NULL ? list->tail->data : NULL;
 }
 
 void *peek_index_doubly_linked_list(
     const DoublyLinkedList *list,
     const unsigned long long index
 ) {
-    const auto tail = get_index_doubly_linked_list(list, index);
+    const DoublyLinkedNode *tail = get_index_doubly_linked_list(list, index);
 
-    return tail != NULL ? tail->data : nullptr;
+    return tail != NULL ? tail->data : NULL;
 }
 
 void *remove_head_doubly_linked_list(
     DoublyLinkedList *list
 ) {
-    if (list->head == NULL) {
-        return nullptr;
+    if (list->head == NULL || list->size == 0) {
+        return NULL;
     }
 
-    const auto node = list->head;
-    list->head = list->head->next;
-    list->size--;
+    DoublyLinkedNode *node = list->head;
+    void *data = node->data;
 
-    const auto data = node->data;
+    list->head = node->next;
+    if (list->head != NULL) {
+        list->head->prev = NULL;
+    } else {
+        list->tail = NULL;
+    }
+
+    list->size--;
     free(node);
 
     return data;
@@ -169,32 +175,49 @@ void *remove_head_doubly_linked_list(
 void *remove_tail_doubly_linked_list(
     DoublyLinkedList *list
 ) {
-    if (list->tail == NULL) {
-        return nullptr;
+    if (list->tail == NULL || list->size == 0) {
+        return NULL;
     }
 
-    const auto node = list->tail;
-    list->tail = list->tail->prev;
-    list->size--;
+    DoublyLinkedNode *node = list->tail;
+    void *data = node->data;
 
-    const auto data = node->data;
+    list->tail = node->prev;
+    if (list->tail != NULL) {
+        list->tail->next = NULL;
+    } else {
+        list->head = NULL;
+    }
+
+    list->size--;
     free(node);
 
     return data;
 }
 
 void *remove_index_doubly_linked_list(DoublyLinkedList *list, const unsigned long long index) {
-    const auto before_node = get_index_doubly_linked_list(list, index - 1);
-
-    if (before_node == NULL) {
-        return nullptr;
+    if (index >= list->size) {
+        return NULL;
     }
 
-    const auto node = before_node->next;
-    before_node->next = before_node->next->next;
+    if (index == 0) {
+        return remove_head_doubly_linked_list(list);
+    }
+
+    if (index == list->size - 1) {
+        return remove_tail_doubly_linked_list(list);
+    }
+
+    DoublyLinkedNode *node = get_index_doubly_linked_list(list, index);
+    if (node == NULL) {
+        return NULL;
+    }
+
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
     list->size--;
 
-    const auto data = node->data;
+    void *data = node->data;
     free(node);
 
     return data;
@@ -204,7 +227,7 @@ void print_doubly_linked_list(
     const DoublyLinkedList *list,
     void (*print)(void *data)
 ) {
-    auto current = list->head;
+    const DoublyLinkedNode *current = list->head;
     if (current != NULL) {
         while (current->next != NULL) {
             print(current->data);

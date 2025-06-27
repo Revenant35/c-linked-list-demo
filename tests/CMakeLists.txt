@@ -1,0 +1,11 @@
+find_package(Check REQUIRED)
+
+add_executable(run_singly_linked_list_tests test_singly_linked_list.c)
+add_executable(run_doubly_linked_list_tests test_doubly_linked_list.c)
+
+target_link_libraries(run_singly_linked_list_tests PRIVATE linked_list Check::check)
+target_link_libraries(run_doubly_linked_list_tests PRIVATE linked_list Check::check)
+
+add_test(NAME SinglyLinkedListTest COMMAND run_singly_linked_list_tests)
+add_test(NAME DoublyLinkedListTest COMMAND run_doubly_linked_list_tests)
+
